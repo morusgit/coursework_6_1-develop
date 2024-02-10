@@ -1,0 +1,29 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="card col-8">
+        <div class="card-body">
+            <h5 class="card-title">Хотите удалить Лог</h5>
+            <p class="card-text mb-3">Дата попытки: {{ object.time }}</p>
+            <p class="card-text mb-3">Статус: {{ object.status }}</p>
+            <p class="card-text mb-3">Ответ сервера: {{ object.server_response }}</p>
+            {% if user.is_staff %}
+            <p class="card-text mb-3">Автор: {{ object.owner }}</p>
+            {% endif %}
+            <a href="{% url 'distribution:view' object.mailing.pk %}" type="button"
+               class="btn btn-sm btn-outline-secondary">К рассылке</a>
+        </div>
+        <div class="card-footer">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-lg btn-block btn btn-danger">Удалить</button>
+                <a type="button" href="{% url 'distribution:log_list'%}"
+                   class="btn btn-lg btn-block btn-outline-primary">Назад</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

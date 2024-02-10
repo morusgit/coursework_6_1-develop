@@ -1,0 +1,26 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="card col-8">
+        <div class="card-body">
+            <h5 class="card-title">Хотите удалить сообщение</h5>
+            <h5 class="card-title">Заголовок: {{ message.title }}</h5>
+            <p class="card-title">Текст: {{ message.text }}</p>
+            {% if request.user.is_staff %}
+            <p class="card-text mb-3">Владелец: {{ message.owner }}</p>
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-lg btn-block btn-outline-primary">Delete</button>
+                <a type="button" href="{% url 'distribution:message_list'%}"
+                   class="btn btn-lg btn-block btn-outline-primary">return</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

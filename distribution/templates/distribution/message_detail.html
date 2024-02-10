@@ -1,0 +1,27 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="card col-8">
+        <div class="card-body">
+
+            <h5 class="card-title">Заголовок: {{message.title}}</h5>
+            <p class="card-title">Текст: {{message.text}}</p>
+
+        </div>
+
+        <div class="card-footer">
+
+            {% if request.user.is_staff %}
+            <p class="card-text mb-3">Владелец: {{message.owner}}</p>
+            {% endif %}
+            <a type="button" href="{% url 'distribution:message_list'%}"
+               class="btn btn-lg btn-block btn-outline-primary">return</a>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

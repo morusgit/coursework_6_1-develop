@@ -1,0 +1,35 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="card col-8">
+        <div class="card-body">
+
+            <p class="card-title">Дата создания: {{ object.created_at }}</p>
+            <p class="card-title">Начало рассылки: {{ object.start_time }}</p>
+            <p class="card-title">Завершение рассылки: {{ object.end_time }}</p>
+            <p class="card-title">Следующая рассылка: {{ object.next_send }}</p>
+            <p class="card-title">Период рассылки: {{ object.periodicity }}</p>
+            <p class="card-title">Статус: {{ object.status }}</p>
+            <p class="card-title">Сообщение: {{ object.message.title|truncatechars:20 }}</p>
+            <p class="card-title">Клиенты:
+                {% for object in object.clients.all %}
+                {{ object.email }},
+                {% endfor %}
+            </p>
+
+        </div>
+        <div class="card-footer">
+
+            {% if request.user.is_staff %}
+            <p class="card-text mb-3">Владелец: {{ object.owner }}</p>
+            {% endif %}
+            <a type="button" href="{% url 'distribution:list'%}"
+               class="btn btn-lg btn-block btn-outline-primary">return</a>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

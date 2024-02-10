@@ -1,0 +1,59 @@
+{% extends 'users/base.html' %}
+{% load my_tags %}
+{% block content %}
+
+{% if not user|has_group:"manager" %}
+<div class="text-center container">
+    <a class="btn btn-primary" href="{% url 'clients:create' %}" type="button">Добавить клиента</a>
+</div>
+{% endif %}
+
+<div class="container text-center">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Email</th>
+            <th scope="col">Имя</th>
+            <th scope="col">Фамилия</th>
+            <th scope="col">Отчество</th>
+            {% if request.user.is_staff %}
+            <th scope="col">Владелец</th>
+            {% endif %}
+            <th scope="col">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for client in object_list %}
+
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ client.email }}</td>
+            <td>{{ client.name|title }}</td>
+            <td>{{ client.surname|title }}</td>
+            <td>{{ client.patronymic|title }}</td>
+            {% if request.user.is_staff %}
+            <th>{{ client.owner }}</th>
+            {% endif %}
+            <td>
+                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                    <a href="{% url 'clients:view' client.pk %}" type="button"
+                       class="btn btn-sm btn-outline-secondary">View</a>
+                    {% if not user|has_group:"manager" %}
+                    <a href="{% url 'clients:edit' client.pk %}" type="button"
+                       class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a href="{% url 'clients:delete' client.pk %}" type="button"
+                       class="btn btn-sm btn-outline-secondary">Delete</a>
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

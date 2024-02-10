@@ -1,0 +1,55 @@
+{% extends 'users/base.html' %}
+{% load my_tags %}
+{% block content %}
+
+{% if not user|has_group:"manager" %}
+<div class="text-center container">
+    <a class="btn btn-primary" href="{% url 'distribution:message_create' %}" type="button">Добавить сообщение</a>
+</div>
+{% endif %}
+
+<div class="container text-center">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Заголовок</th>
+            <th scope="col">Сообщение</th>
+            {% if request.user.is_staff %}
+            <th scope="col">Владелец</th>
+            {% endif %}
+            <th scope="col">Действие</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for message in object_list %}
+
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ message.title|truncatechars:25 }}</td>
+            <td>{{ message.text|truncatechars:25 }}</td>
+            {% if request.user.is_staff %}
+            <td>{{ message.owner }}</td>
+            {% endif %}
+            <td>
+                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                    <a href="{% url 'distribution:message_view' message.pk %}" type="button"
+                       class="btn btn-sm btn-outline-secondary">View</a>
+                    {% if not user|has_group:"manager" %}
+                    <a href="{% url 'distribution:message_edit' message.pk %}" type="button"
+                       class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a href="{% url 'distribution:message_delete' message.pk %}" type="button"
+                       class="btn btn-sm btn-outline-secondary">Delete</a>
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

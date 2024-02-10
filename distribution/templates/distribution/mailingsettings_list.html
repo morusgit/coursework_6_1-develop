@@ -1,0 +1,105 @@
+{% extends 'users/base.html' %}
+{% load my_tags %}
+{% block content %}
+
+{% if not user|has_group:"manager" %}
+<div class="text-center container">
+    <a class="btn btn-primary" href="{% url 'distribution:create' %}" type="button">Добавить рассылку</a>
+</div>
+{% endif %}
+
+<div class="container col-8 mt-2 mb-5">
+    <div class="card">
+        <div class="card-header text-center">
+            <h1>Статистика</h1>
+        </div>
+        <div class="card-body">
+            <div class="row text-center ">
+                <div class="col-12">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th><h4>Количество рассылок</h4></th>
+                            <th><h4>Количество активных рассылок</h4></th>
+                            <th><h4>Количество завершенных рассылок</h4></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><h4>{{ all }}</h4></td>
+                            <td><h4>{{ active }}</h4></td>
+                            <td><h4>{{ completed }}</h4></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container text-center">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Дата создания</th>
+            <th scope="col">Начало рассылки</th>
+            <th scope="col">Завершение рассылки</th>
+            <th scope="col">Период рассылки</th>
+            <th scope="col">Статус</th>
+            <th scope="col">Активность</th>
+            {% if request.user.is_staff %}
+            <th scope="col">Владелец</th>
+            {% endif %}
+            <th scope="col">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for distribution in object_list %}
+
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ distribution.created_at }}</td>
+            <td>{{ distribution.start_time }}</td>
+            <td>{{ distribution.end_time }}</td>
+            <td>{{ distribution.periodicity }}</td>
+            <td>{{ distribution.status }}</td>
+            {% if request.user.is_staff %}
+            {% if distribution.is_active %}
+            <td>
+                <a href="{% url 'distribution:toggle_active' distribution.pk %}" type="button"
+                   class="btn btn-success">True</a>
+            </td>
+            {% else %}
+            <td>
+                <a href="{% url 'distribution:toggle_active' distribution.pk %}" type="button"
+                   class="btn btn-danger">False</a>
+            </td>
+            {% endif %}
+            <td>{{ distribution.owner }}</td>
+            {% else %}
+            <td>{{ distribution.is_active }}</td>
+            {% endif %}
+            <td>
+                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                    <a href="{% url 'distribution:view' distribution.pk %}" type="button"
+                       class="btn btn-sm btn-outline-secondary">View</a>
+                    {% if not user|has_group:"manager" %}
+                    <a href="{% url 'distribution:edit' distribution.pk %}" type="button"
+                       class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a href="{% url 'distribution:delete' distribution.pk %}" type="button"
+                       class="btn btn-sm btn btn-danger">Delete</a>
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
